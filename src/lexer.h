@@ -2,8 +2,8 @@
 //######### The main project lexer header file ###############################
 //############################################################################
 
-#ifndef LEXER_H
-#define LEXER_H
+#ifndef lexer_h
+#define lexer_h
 
 #include <stdio.h>
 #include "./libs/log.h" // thanks to rxi for the log.h library
@@ -39,6 +39,11 @@ typedef enum {
     TOK_COLON,
     TOK_ASSIGN,
     TOK_NEWLINE,
+    TOK_WITH,
+    TOK_LIB,
+    TOK_FILE,
+    TOK_CLASS,
+    TOK_QUOTE,
     ERROR
 } TokensType;
 
@@ -59,8 +64,7 @@ TokensType advance(const char *input, int tokenIndex) {
 
     char currentChar = input[tokenIndex];
     printf("Current character: %c\n", currentChar);
-
-    // Basic token recognition (you can expand this logic)
+    // Gets token type based on current character/s
     switch (currentChar) {
         case '+': return TOK_PLUS;
         case '-': return TOK_MINUS;
@@ -73,7 +77,15 @@ TokensType advance(const char *input, int tokenIndex) {
         case ':': return TOK_COLON;
         case '=': return TOK_ASSIGN;
         case '\n': return TOK_NEWLINE;
-        default:
+        case 'int': return TOK_INT;
+        case 'string': return TOK_STR;
+        case '\0': return TOK_EOF;
+        case 'with': return TOK_WITH;
+        case 'lib': return TOK_LIB;
+        case 'file': return TOK_FILE;
+        case 'class': return TOK_CLASS;
+        case '"': return TOK_QUOTE;
+            default:
             if (currentChar >= '0' && currentChar <= '9') {
                 return TOK_INT; // Return integer token if it's a digit
             }

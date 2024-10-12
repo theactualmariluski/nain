@@ -7,8 +7,7 @@ echo "Loading the Nain Version Manager and package manager..."
 uninstallVersion() {
     # This function is used to uninstall a version of Nain
     if [ $? -eq 0 ]; then
-        dialog --menu "Select the version you want to uninstall:" 0 0 0 {"$cat versions.tmp"} 2>&1 >/dev/tty dialog
-        dialog --yesno "Are you sure you want to uninstall this version?" 0 0 2>&1 >/dev/tty
+        python3 ../pkgs/uninstall.py
     else
         showMenu
     fi
@@ -66,7 +65,7 @@ showMenu() {
                 ;;
         esac
     else
-        echo "Dialog cancelled."  # Handle dialog cancellation
+        echo "Dialog cancelled." 
     fi
     clear
 }

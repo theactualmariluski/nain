@@ -4,3 +4,7 @@
 
 #include <stdio.h> // for printing
 #include "lexer.h"
+
+int main() {
+    getTokens("int a = 5;,");
+}
