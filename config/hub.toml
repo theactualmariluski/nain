@@ -1,0 +1,6 @@
+# This is the configuration file for the Nain Hub
+# The Nain hub is a tool to mange Nain pakages, versions and projects
+[hub]
+npack_reg = "https://npack.nain.dev/api/stable" # gets the pakageson the NeoPack registry, there is: unstable, stable and openSourced
+ui = "w95" # the UI to use, there are three options: modern, w95 and 7533. I recommend w95 because it's simpler
+projectsLists = "NAIN_PROJECTS" # the project list, by default is the NAIN_PROJECTS variable.1

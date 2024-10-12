@@ -7,9 +7,9 @@
 
 #include <stdio.h>
 #include "./libs/log.h" // thanks to rxi for the log.h library
+#include <string.h>
 
-#endif
-
+// Enum for different parsing contexts
 typedef enum {
     CON_DEF,
     CON_CONDITIONAL,
@@ -42,27 +42,66 @@ typedef enum {
     ERROR
 } TokensType;
 
-TokensType advance(char *input,int tokenIndex) { // advances until it finds a keyword, function, expression, ect, and returns a token from the list
-    // Gets where the index is in the input
+#endif // LEXER_H
+
+// Function to advance through the input and return the next token
+TokensType advance(const char *input, int tokenIndex) { 
     int inputLen = strlen(input);
-    if (inputLen == 0) { // validates the input
-        log_error("fatal: no input provided");
-        return ERROR;
-    } else if (input == NULL) {
-        log_error("fatal: input is null");
+    if (inputLen == 0 || input == NULL) { 
+        log_error("fatal: invalid input provided");
         return ERROR;
     }
-    char *providedIndexToken = inputLen - tokenIndex;
+
+    // Check if we are out of bounds
+    if (tokenIndex >= inputLen) {
+        return TOK_EOF;
+    }
+
+    char currentChar = input[tokenIndex];
+    printf("Current character: %c\n", currentChar);
+
+    // Basic token recognition (you can expand this logic)
+    switch (currentChar) {
+        case '+': return TOK_PLUS;
+        case '-': return TOK_MINUS;
+        case '*': return TOK_MULT;
+        case '/': return TOK_DIV;
+        case '(': return TOK_LPAREN;
+        case ')': return TOK_RPAREN;
+        case ';': return TOK_SEMI;
+        case ',': return TOK_COMMA;
+        case ':': return TOK_COLON;
+        case '=': return TOK_ASSIGN;
+        case '\n': return TOK_NEWLINE;
+        default:
+            if (currentChar >= '0' && currentChar <= '9') {
+                return TOK_INT; // Return integer token if it's a digit
+            }
+            break;
+    }
+
+    return ERROR;
 }
 
 // Function to get tokens from input
 TokensType getTokens(const char *input) {
-    Contexts context = NULL;
-    if (input == NULL) {
-        log_error("fatal: there is no input");
-        return ERROR; // Returns an error if there isn't input
-    } else if (input[0] == '\0') {
-        log_error("fatal: searched for token, found end of file"); // logs error if the input is empty
+    if (input == NULL || input[0] == '\0') {
+        log_error("fatal: invalid input provided");
+        return ERROR;
     }
-    return TOK_EOF; // Returns The End Of File when all tokens are read
+
+    int tokenIndex = 0;
+    TokensType token;
+
+    // Iterate through input and get tokens
+    while ((token = advance(input, tokenIndex)) != TOK_EOF) {
+        printf("Token: %d\n", token);
+        tokenIndex++;
+        if (token == ERROR) {
+            log_error("fatal: encountered an invalid token");
+            return ERROR;
+        }
+    }
+
+    return TOK_EOF;
 }

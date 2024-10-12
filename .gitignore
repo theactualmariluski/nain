@@ -1,0 +1,9 @@
+*.npackignore
+.Dockerfile
+*.dll
+*.exe
+*.o
+*.a
+*.so
+*.
+.DS_Store

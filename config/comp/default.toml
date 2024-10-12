@@ -1,0 +1,16 @@
+[compiler_options]
+errorTemplate = "fatal:\n {errorLine}\n {errorMessage} \n {hint}"
+errorColor = "red"
+appType = "auto" # the types are: "auto", "cli", "gui","lib","web","embedded"
+lowLevelMemoryManagement = false
+shareFunctionsOnPascalCase = true # makes so functions can be called in other files by making the name PascalCase, you need to import them
+use_c_headers = false # if true, it will use the c headers instead of the nain libraries
+defaultConfigFormat = "toml" # the types are: "toml", "json", "yaml"
+[makeing]
+useMakefile = "ifFound" # the types are: "ifFound", "always", "never"
+mainFolder = "src"
+binName = "onNpackConfig" # the name of the binary, sets it to the one on the npack config file
+[structure]
+baseFolder = "src"
+mainFile = "main.nain"
+ignoredFiles = [".npackignore","!inGitIgnore", "DS_Store"]
