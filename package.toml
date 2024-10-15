@@ -1,0 +1,14 @@
+# This is used to check for corrupted info while making nain from source.
+
+[package]
+name = "nain"
+version = "0.0.1"
+authors = ["Mario Rosell"]
+description = "The programming language you've been waiting your whole carrer."
+license = "public domain (unlicense)"
+
+[dependencies]
+python3 = "3.6.1"
+make = "3.81"
+clang = "4.8.2"
+rustc = "1.18.0"
