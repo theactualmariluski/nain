@@ -26,5 +26,9 @@
 	"makefile.buildLog": "logs/build.log",
 	"makefile.extensionLog": ".log",
 	"makefile.loggingLevel": "Debug",
-	"makefile.makefilePath": "Makefile"
+	"makefile.makefilePath": "Makefile",
+	"files.associations": {
+		"stdio.h": "c",
+		"lexer.h": "c"
+	}
 }
