@@ -22,5 +22,9 @@
 		"terminal.integrated.smoothScrolling": true,
 		"git.openRepositoryInParentFolders": "always"
 	},
-	"peacock.color": "#1857a4"
+	"peacock.color": "#1857a4",
+	"makefile.buildLog": "logs/build.log",
+	"makefile.extensionLog": ".log",
+	"makefile.loggingLevel": "Debug",
+	"makefile.makefilePath": "Makefile"
 }
