@@ -1,168 +1,101 @@
-//############################################################################
-//######### The main project lexer header file ###############################
-//############################################################################
+//TODO: fuck, i deleated it... now to do it again
 
-#ifndef lexer_h
-#define lexer_h
+/*
+#####################################
+### Nain Lexer Header             ###
+#####################################
+*/
+
+#ifndef LEXER_H
+#define LEXER_H
 
 #include <stdio.h>
-#include "libs/log.h" // thanks to rxi for the log.h library
+#include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#endif
 
-// Enum defining various parsing contexts
-// Each context represents a state during parsing, which could be useful
-// for more complex grammar structures.
-typedef enum {
-    CON_DEF,             // Default context
-    CON_CONDITIONAL,     // Parsing a conditional (e.g., if-else)
-    CON_LOOP,            // Parsing a loop (e.g., for, while)
-    CON_FUNCTION,        // Parsing a function
-    CON_EXPRESSION,      // Parsing an expression
-    CON_ENUM_DEFINITION, // Parsing an enum definition
-    CON_SEMICOLON,       // Expecting a semicolon
-    CON_PARSING_INPUT,   // Actively parsing input
-    CON_EOF,             // End of file/input
-    CON_NULL             // Null context, no current context
-} Contexts;
+typedef enum toks
+{
+    // Misc
+    TOK_EOF,   // End of file
+    TOK_IDENT, // Identifier
+    // Data types
+    TOK_INT,   // Integer (round number)
+    TOK_FLOAT, // Floating point number
+    TOK_STR,   // String
+    TOK_CHAR,  // Character
+    // Boolean keywords
+    TOK_BOOL,  // Boolean
+    TOK_TRUE,  // True
+    TOK_FALSE, // False
+    // Operators
+    TOK_EQ,    // Equal to
+    TOK_NEQ,   // Not equal to
+    TOK_LT,    // Less than
+    TOK_GT,    // Greater than
+    TOK_LEQ,   // Less than or equal to
+    TOK_GEQ,   // Greater than or equal to
+    TOK_AND,   // And
+    TOK_OR,    // Or
+    TOK_NOT,   // Not
+    TOK_ADD,   // Add
+    TOK_SUB,   // Subtract
+    TOK_MUL,   // Multiply
+    TOK_DIV,   // Divide
+    TOK_MOD,   // Modulo
+    TOK_INC,   // Increment
+    TOK_DEC,   // Decrement
+    TOK_ASSIGN,// Assign
+    // Declarations
+    TOK_VAR,   // Variable (with var)
+    TOK_LET,    // Variable (with let)
+    TOK_CONST,  // Constant (with const)
+    TOK_TYPE,   // Type (with type)
+    TOK_FUNC,   // Function (with fn)
+    // Function keywords
+    TOK_RETURN, // Return (with return)
+    TOK_CALL,   // Calls a function (with call)
+    // Conditionals
+    TOK_IF,     // If (with if)
+    TOK_ELSE,   // Else (with else)
+    TOK_WHILE,  // While (with while)
+    TOK_FOR,    // For (with for)
+    TOK_IN,     // In (with in)
+    TOK_BREAK,  // Break (with break)
+    TOK_CONTINUE,// Continue (with continue)
+    // Others
+    TOK_INDENT, // Indentation
+};
 
-// Enum for defining different types of tokens
-// Each token represents a lexical unit, such as operators, literals, or keywords.
-typedef enum {
-    TOK_EOF,        // End of file/input
-    TOK_INT,        // Integer token
-    TOK_STR,        // String token
-    TOK_PLUS,       // '+' operator
-    TOK_MINUS,      // '-' operator
-    TOK_MULT,       // '*' operator
-    TOK_DIV,        // '/' operator
-    TOK_LPAREN,     // '(' symbol
-    TOK_RPAREN,     // ')' symbol
-    TOK_SEMI,       // ';' symbol
-    TOK_COMMA,      // ',' symbol
-    TOK_COLON,      // ':' symbol
-    TOK_ASSIGN,     // '=' symbol
-    TOK_NEWLINE,    // Newline token
-    TOK_WITH,       // 'with' keyword
-    TOK_LIB,        // 'lib' keyword
-    TOK_FILE,       // 'file' keyword
-    TOK_CLASS,      // 'class' keyword
-    TOK_QUOTE,      // " symbol
-    TOK_FN_CALL,    // Function call
-    TOK_FN_DEF,     // Function definition
-    TOK_FN_ARGS,    // Function arguments (e.g., "(x, y)")
-    TOK_BACKSLASH,  // '\' symbol
-    ERROR           // Token that signifies an error or invalid input
-} TokensType;
+// Makes an array of identifiers
+char idents[1000000]; // Don't confuse with the TOK_INDENT token
 
-#endif // LEXER_H
-
-// Function to match keywords in the input string.
-// This function checks if the current input matches known keywords (e.g., "int", "string").
-// Returns the corresponding token if a match is found, otherwise returns ERROR.
-TokensType matchKeyword(const char *input, int tokenIndex) {
-    if (strncmp(input + tokenIndex, "int", 3) == 0) {
-        return TOK_INT;
-    } else if (strncmp(input + tokenIndex, "string", 6) == 0) {
-        return TOK_STR;
-    } else if (strncmp(input + tokenIndex, "with", 4) == 0) {
-        return TOK_WITH;
-    } else if (strncmp(input + tokenIndex, "lib", 3) == 0) {
-        return TOK_LIB;
-    } else if (strncmp(input + tokenIndex, "file", 4) == 0) {
-        return TOK_FILE;
-    } else if (strncmp(input + tokenIndex, "class", 5) == 0) {
-        return TOK_CLASS;
-    } else if (strncmp(input + tokenIndex, "fn", 2) == 0) {
-        return TOK_FN_DEF;
-    } else if (strncmp(input + tokenIndex, "()", 2) == 0) {
-        return TOK_FN_ARGS;
-    } else if (strncmp(input + tokenIndex, "\"", 1) == 0) {
-        return TOK_QUOTE;
+int getTokens(char *code) {
+    int i = 0;
+    for (i = 0; i < strlen(code); i++) {
+        getCurrentToken(i, code);
     }
-    return ERROR; // Not a recognized keyword
 }
 
-// Function to advance through the input string and return the next token.
-// It skips whitespace, handles single-character tokens (e.g., '+', '-'), and checks for keywords.
-// If an invalid character is encountered, it returns ERROR.
-TokensType advance(const char *input, int *tokenIndex) {
-    int inputLen = strlen(input);
-    if (inputLen == 0 || input == NULL) { 
-        printf("fatal: invalid input provided");
-        return ERROR;
+char getCurrentToken(int index, char *code) {
+    char c = code[index];
+    if (c == ' ') { // Skips whitespaces
+        getCurrentToken(index++, code);
     }
 
-    // Check if we've reached the end of input
-    if (*tokenIndex >= inputLen) {
-        return TOK_EOF;
-    }
-
-    char currentChar = input[*tokenIndex];
-    printf("Current character: %c\n", currentChar);
-
-    // Skip whitespace and tabs
-    while (currentChar == ' ' || currentChar == '\t') {
-        (*tokenIndex)++;
-        currentChar = input[*tokenIndex];
-    }
-
-    // Handle single-character tokens
-    switch (currentChar) {
-        case '+': (*tokenIndex)++; return TOK_PLUS;
-        case '-': (*tokenIndex)++; return TOK_MINUS;
-        case '*': (*tokenIndex)++; return TOK_MULT;
-        case '/': (*tokenIndex)++; return TOK_DIV;
-        case '(': (*tokenIndex)++; return TOK_LPAREN;
-        case ')': (*tokenIndex)++; return TOK_RPAREN;
-        case ';': (*tokenIndex)++; return TOK_SEMI;
-        case ',': (*tokenIndex)++; return TOK_COMMA;
-        case ':': (*tokenIndex)++; return TOK_COLON;
-        case '=': (*tokenIndex)++; return TOK_ASSIGN;
-        case '\n': (*tokenIndex)++; return TOK_NEWLINE;
-        case '"': (*tokenIndex)++; return TOK_QUOTE;
-        case '\'': (*tokenIndex)++; return TOK_QUOTE;
-        case '\\': (*tokenIndex)++; return TOK_BACKSLASH;
-        default:
-            // Handle numbers (integers)
-            if (currentChar >= '0' && currentChar <= '9') {
-                while (input[*tokenIndex] >= '0' && input[*tokenIndex] <= '9') {
-                    (*tokenIndex)++; // Skip the entire number
-                }
-                return TOK_INT;
+    // Checks for a /
+    if (c == '/') {
+        if (getCurrentToken(index++, code) == '/') { // and then for other
+            while (c != '\n') { // skips until a new line
+                index++;
             }
-
-            // Check for keywords like "int", "string", etc.
-            TokensType keywordToken = matchKeyword(input, *tokenIndex);
-            if (keywordToken != ERROR) {
-                *tokenIndex += strlen("fn"); // Increment tokenIndex based on keyword length
-                return keywordToken;
-            }
-            break;
-    }
-
-    return ERROR; // If none of the cases match, return ERROR
-}
-
-// Function to tokenize the input string.
-// This function iterates through the input, calling 'advance' to extract tokens one by one.
-// If an invalid token is found, it returns ERROR; otherwise, it keeps processing until EOF.
-TokensType getTokens(const char *input) {
-    if (input == NULL || input[0] == '\0') {
-        printf("fatal: invalid input provided");
-        return ERROR;
-    }
-
-    int tokenIndex = 0;
-    TokensType token;
-
-    // Process the input until the end (TOK_EOF)
-    while ((token = advance(input, &tokenIndex)) != TOK_EOF) {
-        printf("Token: %d\n", token);
-        if (token == ERROR) {
-            printf("fatal: encountered an invalid token");
-            return ERROR;
+            if (getCurrentToken(index, code)) {}
+        } else if (c >= strlen(code)) { // if not, checks for EOF
+            return TOK_EOF; // and returns it
         }
-    }
-
-    return TOK_EOF; // Successfully reached end of input
+    } else {
+        printf("Error: Unexpected character '%c'\n", c);
+        exit(EXIT_FAILURE);
+        }
 }

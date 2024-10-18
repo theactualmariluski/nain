@@ -10,3 +10,4 @@
 *.elf
 *.temp
 *.tmp
+*.untracked.*

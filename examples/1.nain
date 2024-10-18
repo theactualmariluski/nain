@@ -1,0 +1,38 @@
+// this is a comment, use them to explain your code
+
+/There are multi
+line comments too/
+
+with lib studio // use the "studio" library to do stuff
+
+fn main() { // here, your code starts!
+    println!("Hello, World") // prints "Hello, World" to the console
+    / it will look like this in the console:
+    user@pc ~/nain (0) $ nain run examples/1.nain
+
+    |---info----------|
+    | version: 0.1.0  |
+    |---vm------------------------|
+    | ram: 256MB                  |
+    | disk: 512MB                 |
+    | cpu: 4                      |
+    | instances: 6 (1 running)    |
+    |-----------------------------|
+
+    |---output--------|
+    | Hello, World    |
+    |-----------------|
+
+    |---extra-info-------------------|
+    | ran in 0.001s                  |
+    | max memory usage was: 0.001MB  |
+    |--------------------------------| 
+    user@pc ~/nain (0) $
+    \
+    // make variables to store data
+    let foo = 125 // you can use "foo" as if it was a number now!
+}
+
+fn myFunction(x, y) { // this is a function, use them to acces code from anywhere
+    return x + y // use return so you can use the function's return value as a value to operate
+}
