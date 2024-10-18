@@ -11,12 +11,13 @@ As of today, this is a work in progress.
 #include "lexer.h" // for tokenizing
 
 int main() {
-    // gets the .nainrc file
-    char *file = getFile("$HOME/.nainrc");
-    if (file == NULL) {
-        printf("No .nainrc file found, making one...\n");
-        char defContent[] = "vm_max_instances = 5 \n vm_max_mem = 1024 \n vm_max_cores = 3 \n collect_garbage = true \n";
-    }
-    return 0;
+    getTokens("let foo = 10\n \
+              let bar = 20\n \
+              fn main() { \n \
+                  let x = foo + bar \n \
+                  print!(x) \n \
+              } \
+    ");
+
 }
 
